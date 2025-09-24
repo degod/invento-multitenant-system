@@ -19,7 +19,7 @@
                     <div class="card-body p-5">
                         <h3 class="text-center mb-4 fw-bold">Login</h3>
 
-                        <form method="POST" action="{{ route('login') }}">
+                        <form method="POST" action="{{ route('login.post') }}">
                             @csrf
 
                             <div class="mb-3">

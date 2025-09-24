@@ -3,14 +3,21 @@
     <h4 class="text-white">Invento</h4>
     <ul class="nav nav-pills flex-column mb-auto">
         <li>
+            <a href="{{ route('dashboard') }}" class="nav-link text-white d-flex align-items-center">
+                <span class="me-2 bi bi-speedometer2"></span> Dashboard
+            </a>
+        </li>
+        @can('admin')
+        <li>
             <a href="#userMenu" data-bs-toggle="collapse" class="nav-link text-white d-flex align-items-center">
                 <span class="me-2 bi bi-people"></span>User Management
                 <span class="ms-auto bi bi-caret-down-fill"></span>
             </a>
             <ul class="collapse list-unstyled ps-3" id="userMenu">
-                <li><a href="#" class="nav-link">Users</a></li>
+                <li><a href="{{ route('users.index') }}" class="nav-link">Users</a></li>
             </ul>
         </li>
+        @endcan
     </ul>
 </nav>
 <!-- End Sidebar -->

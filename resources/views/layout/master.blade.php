@@ -61,6 +61,9 @@
 
         <!-- Content Area -->
         <main class="content">
+            <!-- Alert -->
+            @include('layout.fragments.alert')
+
             @yield('body_content')
         </main>
     </div>

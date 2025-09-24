@@ -3,6 +3,8 @@
 namespace App\Repositories\User;
 
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -11,17 +13,17 @@ class UserRepository implements UserRepositoryInterface
         $this->model = $model;
     }
 
-    public function findById(int $id)
+    public function findById(int $id): ?User
     {
         return $this->model->find($id);
     }
 
-    public function create(array $data)
+    public function create(array $data): User
     {
         return $this->model->create($data);
     }
 
-    public function update(string $id, array $data)
+    public function update(string $id, array $data): ?User
     {
         $record = $this->findById($id);
         if (!$record) return null;
@@ -34,5 +36,11 @@ class UserRepository implements UserRepositoryInterface
         $record = $this->findById($id);
         if (!$record) return false;
         return $record->delete();
+    }
+
+    public function all(?int $perPage): LengthAwarePaginator|Collection
+    {
+        $users = $this->model->orderBy('id', 'DESC');
+        return $perPage ? $users->paginate($perPage) : $users->get();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Roles;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -19,14 +20,21 @@ class UserSeeder extends Seeder
                 'name' => 'Super Admin',
                 'email' => 'admin@invento.test',
                 'password' => Hash::make('admin123'),
-                'role' => 'admin',
-                'house_owner_id' => null,
+                'role' => Roles::ADMIN,
             ]);
+
+            // artisan command to log the super admin credentials
+            $this->command->info('=================================');
+            $this->command->info('Super Admin Created!');
+            $this->command->info('=================================');
+            $this->command->info('EMAIL:    admin@invento.test');
+            $this->command->info('PASSWORD: admin123');
+            $this->command->info('=================================');
         }
 
         // Sample House Owners
         User::factory()->count(5)->create([
-            'role' => 'house-owner',
+            'role' => Roles::HOUSE_OWNER,
         ]);
     }
 }

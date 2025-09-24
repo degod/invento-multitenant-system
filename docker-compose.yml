@@ -1,0 +1,78 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: invento-app
+    container_name: invento-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - vendor_data:/var/www/html/vendor
+      - node_modules:/var/www/html/node_modules
+    networks:
+      - invento-network
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:stable-alpine
+    container_name: invento-nginx
+    ports:
+      - "90:80"
+    volumes:
+      - ./:/var/www/html:cached
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - invento-network
+    depends_on:
+      - app
+
+  db:
+    image: mysql:8.0
+    container_name: invento-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: invento
+      MYSQL_USER: invento
+      MYSQL_PASSWORD: secret
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - invento-network
+    ports:
+      - "3309:3306"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: invento-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "9090:80"
+    networks:
+      - invento-network
+    depends_on:
+      - db
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: invento-mailhog
+    ports:
+      - "1025:1025"  # smtp
+      - "8025:8025"  # web ui
+    networks:
+      - invento-network
+
+volumes:
+  db_data:
+  vendor_data:
+  node_modules:
+
+networks:
+  invento-network:
+    driver: bridge

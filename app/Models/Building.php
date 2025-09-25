@@ -18,7 +18,7 @@ class Building extends Model
     /**
      * A building belongs to a house owner.
      */
-    public function houseOwner()
+    public function owner()
     {
         return $this->belongsTo(User::class, 'house_owner_id');
     }

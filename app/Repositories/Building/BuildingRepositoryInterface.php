@@ -3,10 +3,12 @@
 namespace App\Repositories\Building;
 
 use App\Models\Building;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 interface BuildingRepositoryInterface
 {
-    public function all(?int $limit): array;
+    public function all(?int $perPage): LengthAwarePaginator|Collection;
 
     public function find(int $id): ?Building;
 

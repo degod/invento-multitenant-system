@@ -2,22 +2,40 @@
 
 namespace App\Repositories\Building;
 
+use App\Enums\Roles;
 use App\Models\Building;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 class BuildingRepository implements BuildingRepositoryInterface
 {
-    public function __construct(private Building $buildingModel) {}
+    private bool $isAdmin;
+    private int $userId;
 
-    public function all(?int $limit): array
+    public function __construct(private Building $buildingModel)
     {
-        return $this->buildingModel->when($limit, fn($query) => $query->limit($limit))
-            ->get()
-            ->toArray();
+        $this->isAdmin = Auth::user()->role === Roles::ADMIN;
+        $this->userId = Auth::id();
+    }
+
+    public function all(?int $perPage): LengthAwarePaginator|Collection
+    {
+        $query = $this->buildingModel
+            ->when(!$this->isAdmin, fn($q) => $q->where('house_owner_id', $this->userId))
+            ->orderBy('id', 'desc');
+
+        return $perPage
+            ? $query->paginate($perPage)
+            : $query->get();
     }
 
     public function find(int $id): ?Building
     {
-        return $this->buildingModel->find($id);
+        return $this->buildingModel
+            ->when(!$this->isAdmin, fn($query) => $query->where('house_owner_id', $this->userId))
+            ->whereKey($id)
+            ->first();
     }
 
     public function create(array $data): Building

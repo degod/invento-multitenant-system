@@ -26,13 +26,18 @@ Route::middleware('auth')->group(function () {
         Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
-        Route::get('/tenants', [TenantController::class, 'index'])->name('tenants.index');
         Route::post('/tenants', [TenantController::class, 'store'])->name('tenants.store');
         Route::get('/tenants/{id}/edit', [TenantController::class, 'edit'])->name('tenants.edit');
         Route::put('/tenants/{id}', [TenantController::class, 'update'])->name('tenants.update');
         Route::delete('/tenants/{id}', [TenantController::class, 'destroy'])->name('tenants.destroy');
     });
+    Route::get('/tenants', [TenantController::class, 'index'])->name('tenants.index');
 
     Route::get('/buildings', [BuildingController::class, 'index'])->name('buildings.index');
+    Route::post('/buildings', [BuildingController::class, 'store'])->name('buildings.store');
+    Route::get('/buildings/{id}/edit', [BuildingController::class, 'edit'])->name('buildings.edit');
+    Route::put('/buildings/{id}', [BuildingController::class, 'update'])->name('buildings.update');
+    Route::delete('/buildings/{id}', [BuildingController::class, 'destroy'])->name('buildings.destroy');
+
     Route::get('/flats', [FlatController::class, 'index'])->name('flats.index');
 });

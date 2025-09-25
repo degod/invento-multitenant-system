@@ -5,6 +5,7 @@
 <div class="container mt-5">
     <h1 class="mb-4">Tenants List</h1>
 
+    @admin
     <button class="btn btn-primary mb-3 float-end" data-bs-toggle="modal" data-bs-target="#addTenantModal">Add Tenant</button>
     <div class="modal fade" id="addTenantModal" tabindex="-1" aria-labelledby="addTenantModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -45,15 +46,21 @@
             </div>
         </div>
     </div>
+    @endadmin
+
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
+                @admin
                 <th>Owner</th>
+                @endadmin
                 <th>Flat</th>
+                @admin
                 <th>Actions</th>
+                @endadmin
             </tr>
         </thead>
         <tbody>
@@ -62,8 +69,11 @@
                 <td>{{ $tenant->name }}</td>
                 <td>{{ $tenant->email }}</td>
                 <td>{{ $tenant->contact }}</td>
+                @admin
                 <td>{{ $tenant->owner->name }}</td>
+                @endadmin
                 <td>{{ $tenant->flat->number ?? 'N/A' }}</td>
+                @admin
                 <td>
                     <a href="{{ route('tenants.edit', $tenant->id) }}" class="btn btn-sm btn-primary">Edit</a>
                     <form action="{{ route('tenants.destroy', $tenant->id) }}" method="POST" class="d-inline">
@@ -74,10 +84,15 @@
                         </button>
                     </form>
                 </td>
+                @endadmin
             </tr>
             @empty
             <tr>
+                @admin
                 <td colspan="6" class="text-center">No tenants found.</td>
+                @else
+                <td colspan="4" class="text-center">No tenants found.</td>
+                @endadmin
             </tr>
             @endforelse
         </tbody>

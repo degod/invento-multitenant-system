@@ -2,23 +2,35 @@
 
 namespace App\Repositories\Tenant;
 
+use App\Enums\Roles;
 use App\Models\Tenant;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 class TenantRepository implements TenantRepositoryInterface
 {
-    public function __construct(private Tenant $model) {}
+    private bool $isAdmin;
+    private int $userId;
+
+    public function __construct(private Tenant $model)
+    {
+        $this->isAdmin = Auth::user()->role === Roles::ADMIN;
+        $this->userId = Auth::id();
+    }
 
     public function all(?int $perPage): LengthAwarePaginator|Collection
     {
-        $tenants = $this->model->orderBy('id', 'DESC');
+        $tenants = $this->model->when(!$this->isAdmin, fn($q) => $q->where('house_owner_id', $this->userId))->orderBy('id', 'desc');
         return $perPage ? $tenants->paginate($perPage) : $tenants->get();
     }
 
     public function find(int $id): ?Tenant
     {
-        return $this->model->find($id);
+        // filter by house_owner_id if not admin
+        return $this->model->when(!$this->isAdmin, fn($q) => $q->where('house_owner_id', $this->userId))
+            ->whereKey($id)
+            ->first();
     }
 
     public function create(array $data): Tenant

@@ -21,7 +21,7 @@ class Tenant extends Model
     /**
      * A tenant belongs to a house owner and has a flat.
      */
-    public function houseOwner()
+    public function owner()
     {
         return $this->belongsTo(User::class, 'house_owner_id');
     }

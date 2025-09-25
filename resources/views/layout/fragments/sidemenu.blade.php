@@ -17,11 +17,6 @@
                 <li><a href="{{ route('users.index') }}" class="nav-link">Users</a></li>
             </ul>
         </li>
-        <li>
-            <a href="{{ route('tenants.index') }}" class="nav-link text-white d-flex align-items-center">
-                <span class="me-2 bi bi-person"></span> Tenants
-            </a>
-        </li>
         @endadmin
         <li>
             <a href="{{ route('buildings.index') }}" class="nav-link text-white d-flex align-items-center">
@@ -31,6 +26,11 @@
         <li>
             <a href="{{ route('flats.index') }}" class="nav-link text-white d-flex align-items-center">
                 <span class="me-2 bi bi-house"></span> Flats
+            </a>
+        </li>
+        <li>
+            <a href="{{ route('tenants.index') }}" class="nav-link text-white d-flex align-items-center">
+                <span class="me-2 bi bi-person"></span> Tenants
             </a>
         </li>
     </ul>

@@ -79,4 +79,7 @@
         @endforelse
     </tbody>
 </table>
+@if(count($users))
+{{ $users->links('pagination::bootstrap-5') }}
+@endif
 @endsection

@@ -3,14 +3,17 @@
 namespace App\Repositories\Tenant;
 
 use App\Models\Tenant;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class TenantRepository implements TenantRepositoryInterface
 {
     public function __construct(private Tenant $model) {}
 
-    public function all(?int $limit): array
+    public function all(?int $perPage): LengthAwarePaginator|Collection
     {
-        return $this->model->limit($limit)->get()->all();
+        $tenants = $this->model->orderBy('id', 'DESC');
+        return $perPage ? $tenants->paginate($perPage) : $tenants->get();
     }
 
     public function find(int $id): ?Tenant

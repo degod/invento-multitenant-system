@@ -27,6 +27,10 @@ Route::middleware('auth')->group(function () {
         Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
         Route::get('/tenants', [TenantController::class, 'index'])->name('tenants.index');
+        Route::post('/tenants', [TenantController::class, 'store'])->name('tenants.store');
+        Route::get('/tenants/{id}/edit', [TenantController::class, 'edit'])->name('tenants.edit');
+        Route::put('/tenants/{id}', [TenantController::class, 'update'])->name('tenants.update');
+        Route::delete('/tenants/{id}', [TenantController::class, 'destroy'])->name('tenants.destroy');
     });
 
     Route::get('/buildings', [BuildingController::class, 'index'])->name('buildings.index');

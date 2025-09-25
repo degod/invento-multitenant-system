@@ -43,4 +43,10 @@ class UserRepository implements UserRepositoryInterface
         $users = $this->model->orderBy('id', 'DESC');
         return $perPage ? $users->paginate($perPage) : $users->get();
     }
+
+    public function allByRole(string $role, ?int $perPage): LengthAwarePaginator|Collection
+    {
+        $users = $this->model->where('role', $role)->orderBy('id', 'DESC');
+        return $perPage ? $users->paginate($perPage) : $users->get();
+    }
 }

@@ -14,7 +14,7 @@ class BillCategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word(),
+            'name' => $this->faker->randomElement(['Electricity', 'Water', 'Waste', 'Service Charge', 'Gas', 'Internet']),
             'house_owner_id' => User::where('role', Roles::HOUSE_OWNER)
                                     ->inRandomOrder()
                                     ->first()

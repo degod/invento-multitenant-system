@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TenantSeeder::class);
         $this->call(FlatSeeder::class);
         $this->call(BillCategorySeeder::class);
+        $this->call(BillSeeder::class);
     }
 }

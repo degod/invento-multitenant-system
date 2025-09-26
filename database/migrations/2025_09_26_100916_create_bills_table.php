@@ -13,7 +13,29 @@ return new class extends Migration
     {
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
+            $table->string('month');
+            $table->unsignedBigInteger('bill_category_id');
+            $table->decimal('amount', 12, 2);
+            $table->enum('status', ['paid', 'unpaid'])->default('unpaid');
+            $table->text('notes')->nullable();
+            $table->unsignedBigInteger('flat_id');
+            $table->unsignedBigInteger('house_owner_id');
             $table->timestamps();
+
+            $table->foreign('flat_id')
+                ->references('id')
+                ->on('flats')
+                ->onDelete('cascade');
+
+            $table->foreign('bill_category_id')
+                ->references('id')
+                ->on('bill_categories')
+                ->onDelete('cascade');
+            
+            $table->foreign('house_owner_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
         });
     }
 

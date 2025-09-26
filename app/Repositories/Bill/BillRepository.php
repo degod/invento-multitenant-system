@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Repositories\BillCategory;
+namespace App\Repositories\Bill;
 
 use App\Enums\Roles;
-use App\Models\BillCategory;
+use App\Models\Bill;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 
-class BillCategoryRepository implements BillCategoryRepositoryInterface
+class BillRepository implements BillRepositoryInterface
 {
     private bool $isAdmin;
     private int $userId;
 
-    public function __construct(private BillCategory $billCategoryModel)
+    public function __construct(private Bill $billModel)
     {
         $this->isAdmin = Auth::user()->role === Roles::ADMIN;
         $this->userId = Auth::id();
@@ -21,7 +21,7 @@ class BillCategoryRepository implements BillCategoryRepositoryInterface
 
     public function all(?int $perPage, array $filters): LengthAwarePaginator|Collection
     {
-        $query = $this->billCategoryModel->newQuery();
+        $query = $this->billModel->newQuery();
 
         // Apply filters first
         foreach ($filters as $field => $value) {
@@ -38,28 +38,28 @@ class BillCategoryRepository implements BillCategoryRepositoryInterface
             : $query->get();
     }
 
-    public function find(int $id): ?BillCategory
+    public function find(int $id): ?Bill
     {
-        return $this->billCategoryModel
+        return $this->billModel
             ->when(!$this->isAdmin, fn($query) => $query->where('house_owner_id', $this->userId))
             ->whereKey($id)
             ->first();
     }
 
-    public function create(array $data): BillCategory
+    public function create(array $data): Bill
     {
-        return $this->billCategoryModel->create($data);
+        return $this->billModel->create($data);
     }
 
     public function update(int $id, array $data): bool
     {
-        $billCategory = $this->find($id);
-        return $billCategory ? $billCategory->update($data) : false;
+        $bill = $this->find($id);
+        return $bill ? $bill->update($data) : false;
     }
 
     public function delete(int $id): bool
     {
-        $billCategory = $this->find($id);
-        return $billCategory ? $billCategory->delete() : false;
+        $bill = $this->find($id);
+        return $bill ? $bill->delete() : false;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\BillStatuses;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BillEditRequest extends FormRequest
@@ -22,7 +23,13 @@ class BillEditRequest extends FormRequest
     public function rules(): array
     {
         return [
-            
+            'month' => ['required', 'string'],
+            'amount' => ['required', 'numeric', 'min:0'],
+            'status' => ['required', 'string', 'in:' . BillStatuses::UNPAID . ',' . BillStatuses::PAID],
+            'bill_category_id' => ['required', 'exists:bill_categories,id'],
+            'flat_id' => ['required', 'exists:flats,id'],
+            'house_owner_id' => ['required', 'exists:users,id'],
+            'description' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

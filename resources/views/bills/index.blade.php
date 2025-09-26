@@ -143,7 +143,11 @@ use App\Enums\BillStatuses;
             </tr>
             @empty
             <tr>
-                <td colspan="6">No bills found.</td>
+                @admin
+                <td colspan="6" class="text-center">No bills found.</td>
+                @else
+                <td colspan="5" class="text-center">No bills found.</td>
+                @endadmin
             </tr>
             @endforelse
         </tbody>

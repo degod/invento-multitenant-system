@@ -63,6 +63,11 @@ class BillController extends Controller
                 $building = $this->buildingRepository->find($flat->building_id);
                 $this->emailService->sendBillNotification($tenant->email, $data, $flat, $building);
             }
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->errorInfo[1] === 1062) {
+                return redirect()->back()->with('error', 'This bill already exists for this flat and month.');
+            }
+            return redirect()->back()->with('error', 'Database error occurred.');
         } catch (\Exception $e) {
             $this->logService->error('Error creating bill: ' . $e->getMessage(), ['exception' => $e]);
             return redirect()->route('bills.index')->with('error', $e->getMessage());
@@ -108,6 +113,11 @@ class BillController extends Controller
         $data['month'] = Carbon::createFromFormat('Y-m', $data['month'])->format('F Y');
         try {
             $this->billRepository->update($id, $data);
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->errorInfo[1] === 1062) {
+                return redirect()->back()->with('error', 'This bill already exists for this flat and month.');
+            }
+            return redirect()->back()->with('error', 'Database error occurred.');
         } catch (\Exception $e) {
             $this->logService->error('Error updating bill: ' . $e->getMessage(), ['exception' => $e]);
             return redirect()->route('bills.index')->with('error', $e->getMessage());

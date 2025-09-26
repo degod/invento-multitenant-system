@@ -38,6 +38,11 @@ class BillCategoryController extends Controller
         }
         try {
             $this->billCategoryRepository->create($data);
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->errorInfo[1] === 1062) {
+                return redirect()->back()->with('error', 'This bill category already exists for this house owner.');
+            }
+            return redirect()->back()->with('error', 'Database error occurred.');
         } catch (\Exception $e) {
             $this->logService->error('Error creating bill category: ' . $e->getMessage(), ['exception' => $e]);
             return redirect()->route('bills.categories.index')->with('error', $e->getMessage());
@@ -78,6 +83,11 @@ class BillCategoryController extends Controller
 
         try {
             $this->billCategoryRepository->update($id, $data);
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->errorInfo[1] === 1062) {
+                return redirect()->back()->with('error', 'This bill category already exists for this house owner.');
+            }
+            return redirect()->back()->with('error', 'Database error occurred.');
         } catch (\Exception $e) {
             $this->logService->error('Error updating bill category: ' . $e->getMessage(), ['exception' => $e]);
             return redirect()->route('bills.categories.index')->with('error', $e->getMessage());

@@ -15,17 +15,33 @@ class BillFactory extends Factory
 
     public function definition(): array
     {
-        $flat = Flat::inRandomOrder()->first() ?? Flat::factory()->create();
-        $ownerId = $flat->house_owner_id;
+        static $pairs = [];
 
-        return [
-            'month' => $this->faker->monthName . ' ' . $this->faker->year,
+        $initialArr = [
             'amount' => $this->faker->randomFloat(2, 1000, 50000),
             'status' => $this->faker->randomElement(['paid', 'unpaid']),
             'notes' => $this->faker->optional()->sentence(),
-            'bill_category_id' => BillCategory::inRandomOrder()->first()->id ?? BillCategory::factory()->create()->id,
+        ];
+        return array_merge($initialArr, $this->getValidPair($pairs));
+    }
+
+    private function getValidPair(array &$pairs): array
+    {
+        do {
+            $month = $this->faker->monthName . ' ' . $this->faker->year;
+            $flat = Flat::inRandomOrder()->first() ?? Flat::factory()->create();
+            $ownerId = $flat->house_owner_id;
+            $billCategory = BillCategory::where('house_owner_id', $ownerId)->inRandomOrder()->first() ?? BillCategory::factory()->create(['house_owner_id' => $ownerId]);
+
+            $pair = $flat->id . '-' . $month;
+        } while (in_array($pair, $pairs));
+
+        $pairs[] = $pair;
+        return [
             'flat_id' => $flat->id,
+            'month' => $month,
             'house_owner_id' => $ownerId,
+            'bill_category_id' => $billCategory->id,
         ];
     }
 }

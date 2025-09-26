@@ -31,11 +31,14 @@ return new class extends Migration
                 ->references('id')
                 ->on('bill_categories')
                 ->onDelete('cascade');
-            
+
             $table->foreign('house_owner_id')
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
+
+            // create a composite key using flat_id + month to force unique
+            $table->unique(['flat_id', 'month', 'bill_category_id'], 'unique_bill_per_flat_month_category');
         });
     }
 

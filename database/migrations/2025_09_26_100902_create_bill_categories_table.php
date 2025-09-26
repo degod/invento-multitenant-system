@@ -23,7 +23,7 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             // create a composite key using house_owner_id + name to force unique
-            $table->unique(['house_owner_id', 'name']);
+            $table->unique(['house_owner_id', 'name'], 'unique_bill_category_per_owner');
         });
     }
 

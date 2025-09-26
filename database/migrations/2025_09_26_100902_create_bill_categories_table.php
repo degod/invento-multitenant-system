@@ -16,11 +16,14 @@ return new class extends Migration
             $table->string('name');
             $table->unsignedBigInteger('house_owner_id');
             $table->timestamps();
-            
+
             $table->foreign('house_owner_id')
                 ->references('id')
                 ->on('users')
                 ->onDelete('cascade');
+
+            // create a composite key using house_owner_id + name to force unique
+            $table->unique(['house_owner_id', 'name']);
         });
     }
 

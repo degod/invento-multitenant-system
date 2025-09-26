@@ -12,6 +12,6 @@ class BillCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        BillCategory::factory()->count(5)->create();
+        BillCategory::factory()->count(25)->create();
     }
 }

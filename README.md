@@ -6,6 +6,13 @@
 
 ## HOW TO SETUP
 
+-   Make sure your docker desktop is up and running
+-   Launch you terminal and navigate to your working directory
+
+```bash
+cd ./working_dir
+```
+
 -   Clone repository
 
 ```bash

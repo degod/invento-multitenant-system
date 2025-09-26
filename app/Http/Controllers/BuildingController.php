@@ -5,14 +5,13 @@ namespace App\Http\Controllers;
 use App\Enums\Roles;
 use App\Http\Requests\BuildingEditRequest;
 use App\Http\Requests\BuildingStoreRequest;
-use App\Models\Building;
 use App\Repositories\Building\BuildingRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
-use Illuminate\Http\Request;
+use App\Services\LogService;
 
 class BuildingController extends Controller
 {
-    public function __construct(private BuildingRepositoryInterface $buildingRepository, private UserRepositoryInterface $userRepository) {}
+    public function __construct(private BuildingRepositoryInterface $buildingRepository, private UserRepositoryInterface $userRepository, private LogService $logService) {}
 
     public function index()
     {
@@ -25,7 +24,12 @@ class BuildingController extends Controller
     public function store(BuildingStoreRequest $request)
     {
         $validated = $request->validated();
-        $this->buildingRepository->create($validated);
+        try {
+            $this->buildingRepository->create($validated);
+        } catch (\Exception $e) {
+            $this->logService->error('Error creating building: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('buildings.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('buildings.index')->with('success', 'Building created successfully.');
     }
@@ -44,10 +48,11 @@ class BuildingController extends Controller
     public function update(BuildingEditRequest $request, int $id)
     {
         $validated = $request->validated();
-        $updated = $this->buildingRepository->update($id, $validated);
-
-        if (!$updated) {
-            return redirect()->route('buildings.index')->with('error', 'Building not found or update failed.');
+        try {
+            $this->buildingRepository->update($id, $validated);
+        } catch (\Exception $e) {
+            $this->logService->error('Error updating building: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('buildings.index')->with('error', $e->getMessage());
         }
 
         return redirect()->route('buildings.index')->with('success', 'Building updated successfully.');
@@ -55,10 +60,11 @@ class BuildingController extends Controller
 
     public function destroy(int $id)
     {
-        $deleted = $this->buildingRepository->delete($id);
-
-        if (!$deleted) {
-            return redirect()->route('buildings.index')->with('error', 'Building not found or delete failed.');
+        try {
+            $this->buildingRepository->delete($id);
+        } catch (\Exception $e) {
+            $this->logService->error('Error deleting building: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('buildings.index')->with('error', $e->getMessage());
         }
 
         return redirect()->route('buildings.index')->with('success', 'Building deleted successfully.');

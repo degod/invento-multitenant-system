@@ -7,6 +7,7 @@ use App\Http\Requests\BillCategoryEditRequest;
 use App\Http\Requests\BillCategoryStoreRequest;
 use App\Repositories\BillCategory\BillCategoryRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
+use App\Services\LogService;
 use Illuminate\Support\Facades\Auth;
 
 class BillCategoryController extends Controller
@@ -14,7 +15,8 @@ class BillCategoryController extends Controller
     private bool $isAdmin;
     private int $userId;
 
-    public function __construct(private BillCategoryRepositoryInterface $billCategoryRepository, private UserRepositoryInterface $userRepository) {
+    public function __construct(private BillCategoryRepositoryInterface $billCategoryRepository, private UserRepositoryInterface $userRepository, private LogService $logService)
+    {
         $this->isAdmin = Auth::user()->role === Roles::ADMIN;
         $this->userId = Auth::id();
     }
@@ -30,11 +32,16 @@ class BillCategoryController extends Controller
     public function store(BillCategoryStoreRequest $request)
     {
         $data = $request->validated();
-        
+
         if (!$this->isAdmin && $data['house_owner_id'] != $this->userId) {
             return redirect()->route('bills.categories.index')->with('error', 'Unauthorized action.');
         }
-        $this->billCategoryRepository->create($data);
+        try {
+            $this->billCategoryRepository->create($data);
+        } catch (\Exception $e) {
+            $this->logService->error('Error creating bill category: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('bills.categories.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->back()->with('success', 'Bill category created successfully.');
     }
@@ -69,7 +76,12 @@ class BillCategoryController extends Controller
             return redirect()->route('bills.categories.index')->with('error', 'Unauthorized action.');
         }
 
-        $this->billCategoryRepository->update($id, $data);
+        try {
+            $this->billCategoryRepository->update($id, $data);
+        } catch (\Exception $e) {
+            $this->logService->error('Error updating bill category: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('bills.categories.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('bills.categories.index')->with('success', 'Bill category updated successfully.');
     }
@@ -83,8 +95,12 @@ class BillCategoryController extends Controller
         if (!$this->isAdmin && $category->house_owner_id != $this->userId) {
             return redirect()->route('bills.categories.index')->with('error', 'Unauthorized action.');
         }
-
-        $this->billCategoryRepository->delete($id);
+        try {
+            $this->billCategoryRepository->delete($id);
+        } catch (\Exception $e) {
+            $this->logService->error('Error deleting bill category: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('bills.categories.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('bills.categories.index')->with('success', 'Bill category deleted successfully.');
     }

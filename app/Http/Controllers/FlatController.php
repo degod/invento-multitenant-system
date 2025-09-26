@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Enums\Roles;
 use App\Http\Requests\FlatEditRequest;
 use App\Http\Requests\FlatStoreRequest;
-use App\Models\Flat;
 use App\Repositories\Building\BuildingRepositoryInterface;
 use App\Repositories\Flat\FlatRepositoryInterface;
 use App\Repositories\Tenant\TenantRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
+use App\Services\LogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +18,7 @@ class FlatController extends Controller
     private bool $isAdmin;
     private int $userId;
 
-    public function __construct(private FlatRepositoryInterface $flatRepository, private TenantRepositoryInterface $tenantRepository, private BuildingRepositoryInterface $buildingRepository, private UserRepositoryInterface $userRepository)
+    public function __construct(private FlatRepositoryInterface $flatRepository, private TenantRepositoryInterface $tenantRepository, private BuildingRepositoryInterface $buildingRepository, private UserRepositoryInterface $userRepository, private LogService $logService)
     {
         $this->isAdmin = Auth::user()->role === Roles::ADMIN;
         $this->userId = Auth::id();
@@ -46,7 +46,12 @@ class FlatController extends Controller
             return redirect()->route('flats.index')->with('error', 'Unauthorized action.');
         }
 
-        $this->flatRepository->create($data);
+        try {
+            $this->flatRepository->create($data);
+        } catch (\Exception $e) {
+            $this->logService->error('Error creating flat: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('flats.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('flats.index')->with('success', 'Flat created successfully.');
     }
@@ -87,7 +92,12 @@ class FlatController extends Controller
             return redirect()->route('flats.index')->with('error', 'Unauthorized action.');
         }
 
-        $this->flatRepository->update($id, $data);
+        try {
+            $this->flatRepository->update($id, $data);
+        } catch (\Exception $e) {
+            $this->logService->error('Error updating flat: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('flats.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('flats.index')->with('success', 'Flat updated successfully.');
     }
@@ -102,7 +112,12 @@ class FlatController extends Controller
             return redirect()->route('flats.index')->with('error', 'Unauthorized action.');
         }
 
-        $this->flatRepository->delete($id);
+        try {
+            $this->flatRepository->delete($id);
+        } catch (\Exception $e) {
+            $this->logService->error('Error deleting flat: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('flats.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('flats.index')->with('success', 'Flat deleted successfully.');
     }

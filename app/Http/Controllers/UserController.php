@@ -6,11 +6,12 @@ use App\Enums\Roles;
 use App\Http\Requests\UserEditRequest;
 use App\Http\Requests\UserStoreRequest;
 use App\Repositories\User\UserRepositoryInterface;
+use App\Services\LogService;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function __construct(private UserRepositoryInterface $userRepository) {}
+    public function __construct(private UserRepositoryInterface $userRepository, private LogService $logService) {}
 
     public function index()
     {
@@ -25,7 +26,13 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $data['password'] = Hash::make('password');
-        $this->userRepository->create($data);
+
+        try {
+            $this->userRepository->create($data);
+        } catch (\Exception $e) {
+            $this->logService->error('Error creating user: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('users.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('users.index')->with('success', 'User created successfully. Default password is "password".');
     }
@@ -42,14 +49,26 @@ class UserController extends Controller
     public function update(UserEditRequest $request, int $id)
     {
         $data = $request->validated();
-        $this->userRepository->update($id, $data);
+
+        try {
+            $this->userRepository->update($id, $data);
+        } catch (\Exception $e) {
+            $this->logService->error('Error updating user: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('users.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
     public function destroy(int $id)
     {
-        $this->userRepository->delete($id);
+        try {
+            $this->userRepository->delete($id);
+        } catch (\Exception $e) {
+            $this->logService->error('Error deleting user: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('users.index')->with('error', $e->getMessage());
+        }
+
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 }

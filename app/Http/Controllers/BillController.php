@@ -11,6 +11,7 @@ use App\Repositories\Building\BuildingRepositoryInterface;
 use App\Repositories\Flat\FlatRepositoryInterface;
 use App\Repositories\Tenant\TenantRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
+use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,7 +21,7 @@ class BillController extends Controller
     private bool $isAdmin;
     private int $userId;
 
-    public function __construct(private BillRepositoryInterface $billRepository, private UserRepositoryInterface $userRepository, private BillCategoryRepositoryInterface $billCategoryRepository, private FlatRepositoryInterface $flatRepository, private TenantRepositoryInterface $tenantRepository, private BuildingRepositoryInterface $buildingRepository)
+    public function __construct(private BillRepositoryInterface $billRepository, private UserRepositoryInterface $userRepository, private BillCategoryRepositoryInterface $billCategoryRepository, private FlatRepositoryInterface $flatRepository, private TenantRepositoryInterface $tenantRepository, private BuildingRepositoryInterface $buildingRepository, private LogService $logService)
     {
         $this->isAdmin = Auth::user()->role === 'admin';
         $this->userId = Auth::id();
@@ -51,6 +52,7 @@ class BillController extends Controller
             $data['month'] = Carbon::createFromFormat('Y-m', $data['month'])->format('F Y');
             $this->billRepository->create($data);
         } catch (\Exception $e) {
+            $this->logService->error('Error creating bill: ' . $e->getMessage(), ['exception' => $e]);
             return redirect()->route('bills.index')->with('error', $e->getMessage());
         }
 
@@ -92,7 +94,12 @@ class BillController extends Controller
         }
 
         $data['month'] = Carbon::createFromFormat('Y-m', $data['month'])->format('F Y');
-        $this->billRepository->update($id, $data);
+        try {
+            $this->billRepository->update($id, $data);
+        } catch (\Exception $e) {
+            $this->logService->error('Error updating bill: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('bills.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('bills.index')->with('success', 'Bill updated successfully.');
     }
@@ -108,7 +115,12 @@ class BillController extends Controller
             return redirect()->route('bills.index')->with('error', 'Unauthorized action.');
         }
 
-        $this->billRepository->delete($id);
+        try {
+            $this->billRepository->delete($id);
+        } catch (\Exception $e) {
+            $this->logService->error('Error deleting bill: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('bills.index')->with('error', $e->getMessage());
+        }
 
         return redirect()->route('bills.index')->with('success', 'Bill deleted successfully.');
     }

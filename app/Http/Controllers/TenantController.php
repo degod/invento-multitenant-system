@@ -7,10 +7,11 @@ use App\Http\Requests\TenantEditRequest;
 use App\Http\Requests\TenantStoreRequest;
 use App\Repositories\Tenant\TenantRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
+use App\Services\LogService;
 
 class TenantController extends Controller
 {
-    public function __construct(private TenantRepositoryInterface $tenantRepository, private UserRepositoryInterface $userRepository) {}
+    public function __construct(private TenantRepositoryInterface $tenantRepository, private UserRepositoryInterface $userRepository, private LogService $logService) {}
 
     public function index()
     {
@@ -24,7 +25,13 @@ class TenantController extends Controller
     {
         $data = $request->validated();
 
-        $this->tenantRepository->create($data);
+        try {
+            $this->tenantRepository->create($data);
+        } catch (\Exception $e) {
+            $this->logService->error('Error creating tenant: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('tenants.index')->with('error', $e->getMessage());
+        }
+
         return redirect()->route('tenants.index')->with('success', 'Tenant created successfully.');
     }
 
@@ -47,7 +54,13 @@ class TenantController extends Controller
 
         $data = $request->validated();
 
-        $this->tenantRepository->update($id, $data);
+        try {
+            $this->tenantRepository->update($id, $data);
+        } catch (\Exception $e) {
+            $this->logService->error('Error updating tenant: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('tenants.index')->with('error', $e->getMessage());
+        }
+
         return redirect()->route('tenants.index')->with('success', 'Tenant updated successfully.');
     }
 
@@ -58,7 +71,13 @@ class TenantController extends Controller
             return redirect()->route('tenants.index')->with('error', 'Tenant not found.');
         }
 
-        $this->tenantRepository->delete($id);
+        try {
+            $this->tenantRepository->delete($id);
+        } catch (\Exception $e) {
+            $this->logService->error('Error deleting tenant: ' . $e->getMessage(), ['exception' => $e]);
+            return redirect()->route('tenants.index')->with('error', $e->getMessage());
+        }
+
         return redirect()->route('tenants.index')->with('success', 'Tenant deleted successfully.');
     }
 }

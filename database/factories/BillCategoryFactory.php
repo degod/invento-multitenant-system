@@ -2,22 +2,23 @@
 
 namespace Database\Factories;
 
+use App\Models\BillCategory;
+use App\Models\User;
+use App\Enums\Roles;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BillCategory>
- */
 class BillCategoryFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    protected $model = BillCategory::class;
+
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->word(),
+            'house_owner_id' => User::where('role', Roles::HOUSE_OWNER)
+                                    ->inRandomOrder()
+                                    ->first()
+                                    ->id ?? User::factory()->create(['role' => Roles::HOUSE_OWNER])->id,
         ];
     }
 }

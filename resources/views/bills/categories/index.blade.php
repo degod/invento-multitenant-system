@@ -5,8 +5,10 @@
 <div class="container mt-5">
     <h1 class="mb-4">Bill Categories</h1>
 
-    <button class="btn btn-primary mb-3 float-end" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add New Category</button>
-    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <button class="btn btn-primary mb-3 float-end" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add New
+        Category</button>
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -23,7 +25,12 @@
                         @admin
                         <div class="mb-3">
                             <label for="house_owner_id" class="form-label">House Owner</label>
-                            <textarea class="form-control" id="house_owner_id" name="house_owner_id" rows="3"></textarea>
+                            <select class="form-select" id="house_owner_id" name="house_owner_id">
+                                <option value="" disabled selected> -- Select House Owner -- </option>
+                                @foreach($owners as $owner)
+                                <option value="{{ $owner->id }}">{{ $owner->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         @else
                         <input type="hidden" name="house_owner_id" value="N/A">
@@ -40,7 +47,7 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Name</th>
+                <th>Bill Kind</th>
                 @admin
                 <th>House Owner</th>
                 @endadmin
@@ -55,11 +62,16 @@
                 <td>{{ $category->owner->name ?? 'N/A' }}</td>
                 @endadmin
                 <td>
-                    <a href="{{ route('bills.categories.edit', $category->id) }}" class="btn btn-sm btn-primary">Edit</a>
-                    <form action="{{ route('bills.categories.destroy', $category->id) }}" method="POST" style="display:inline;">
+                    <a href="{{ route('bills.categories.edit', $category->id) }}"
+                        class="btn btn-sm btn-primary">Edit</a>
+                    <form action="{{ route('bills.categories.destroy', $category->id) }}" method="POST"
+                        style="display:inline;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Are you sure you want to DELETE this bill category?')">
+                            Delete
+                        </button>
                     </form>
                 </td>
             </tr>

@@ -11,7 +11,7 @@ class BillCategoryEditRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,6 +21,9 @@ class BillCategoryEditRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [];
+        return [
+            'name' => 'required|string|max:255',
+            'house_owner_id' => 'required|exists:users,id',
+        ];
     }
 }

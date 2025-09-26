@@ -13,7 +13,14 @@ return new class extends Migration
     {
         Schema::create('bill_categories', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->unsignedBigInteger('house_owner_id');
             $table->timestamps();
+            
+            $table->foreign('house_owner_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
         });
     }
 

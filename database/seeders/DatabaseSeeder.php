@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\BillCategory;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,5 +16,6 @@ class DatabaseSeeder extends Seeder
         $this->call(BuildingSeeder::class);
         $this->call(TenantSeeder::class);
         $this->call(FlatSeeder::class);
+        $this->call(BillCategorySeeder::class);
     }
 }

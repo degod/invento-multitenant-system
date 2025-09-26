@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Bill;
+use App\Models\BillCategory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +14,6 @@ class BillCategorySeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        BillCategory::factory()->count(5)->create();
     }
 }

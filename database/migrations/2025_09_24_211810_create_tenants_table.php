@@ -16,12 +16,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('contact')->nullable();
-            $table->unsignedBigInteger('flat_id')->nullable();
             $table->unsignedBigInteger('house_owner_id');
             $table->timestamps();
 
             $table->foreign('house_owner_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('flat_id')->references('id')->on('flats')->onDelete('cascade');
         });
     }
 

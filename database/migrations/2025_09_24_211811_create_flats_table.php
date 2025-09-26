@@ -14,10 +14,15 @@ return new class extends Migration
         Schema::create('flats', function (Blueprint $table) {
             $table->id();
             $table->string('flat_number');
-            $table->string('owner_name')->nullable();
+            $table->unsignedBigInteger('tenant_id')->nullable();
             $table->unsignedBigInteger('building_id');
             $table->unsignedBigInteger('house_owner_id');
             $table->timestamps();
+
+            $table->foreign('tenant_id')
+                ->references('id')
+                ->on('tenants')
+                ->onDelete('set null');
 
             $table->foreign('building_id')
                 ->references('id')

@@ -22,7 +22,6 @@ class TenantFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'contact' => $this->faker->phoneNumber(),
-            'flat_id' => Flat::inRandomOrder()->first()->id ?? Flat::factory()->create()->id,
             'house_owner_id' => User::where('role', Roles::HOUSE_OWNER)->inRandomOrder()->first()->id,
         ];
     }

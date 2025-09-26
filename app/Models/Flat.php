@@ -33,10 +33,10 @@ class Flat extends Model
     }
 
     /**
-     * A flat can have many tenants.
+     * A flat can have one tenant.
      */
-    public function tenants()
+    public function tenant()
     {
-        return $this->hasMany(Tenant::class);
+        return $this->hasOne(Tenant::class, 'id', 'tenant_id');
     }
 }

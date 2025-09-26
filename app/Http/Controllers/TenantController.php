@@ -14,7 +14,7 @@ class TenantController extends Controller
 
     public function index()
     {
-        $tenants = $this->tenantRepository->all(config('pagination.default.per_page'));
+        $tenants = $this->tenantRepository->all(config('pagination.default.per_page'), []);
         $owners = $this->userRepository->allByRole(Roles::HOUSE_OWNER, null);
 
         return view('tenants.index', compact('tenants', 'owners'));

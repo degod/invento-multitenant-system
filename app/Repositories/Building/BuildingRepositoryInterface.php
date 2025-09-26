@@ -8,7 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 interface BuildingRepositoryInterface
 {
-    public function all(?int $perPage): LengthAwarePaginator|Collection;
+    public function all(?int $perPage, array $filters): LengthAwarePaginator|Collection;
 
     public function find(int $id): ?Building;
 

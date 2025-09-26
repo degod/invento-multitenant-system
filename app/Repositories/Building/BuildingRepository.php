@@ -19,11 +19,19 @@ class BuildingRepository implements BuildingRepositoryInterface
         $this->userId = Auth::id();
     }
 
-    public function all(?int $perPage): LengthAwarePaginator|Collection
+    public function all(?int $perPage, array $filters): LengthAwarePaginator|Collection
     {
-        $query = $this->buildingModel
-            ->when(!$this->isAdmin, fn($q) => $q->where('house_owner_id', $this->userId))
-            ->orderBy('id', 'desc');
+        $query = $this->buildingModel->newQuery();
+
+        // Apply filters first
+        foreach ($filters as $field => $value) {
+            $query->where($field, $value);
+        }
+
+        if (!$this->isAdmin && !array_key_exists('house_owner_id', $filters)) {
+            $query->where('house_owner_id', $this->userId);
+        }
+        $query->orderBy('id', 'desc');
 
         return $perPage
             ? $query->paginate($perPage)

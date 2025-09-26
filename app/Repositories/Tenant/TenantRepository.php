@@ -19,10 +19,23 @@ class TenantRepository implements TenantRepositoryInterface
         $this->userId = Auth::id();
     }
 
-    public function all(?int $perPage): LengthAwarePaginator|Collection
+    public function all(?int $perPage, array $filters): LengthAwarePaginator|Collection
     {
-        $tenants = $this->model->when(!$this->isAdmin, fn($q) => $q->where('house_owner_id', $this->userId))->orderBy('id', 'desc');
-        return $perPage ? $tenants->paginate($perPage) : $tenants->get();
+        $query = $this->model->newQuery();
+
+        // Apply filters first
+        foreach ($filters as $key => $value) {
+            $query->where($key, $value);
+        }
+
+        if (!$this->isAdmin && !array_key_exists('house_owner_id', $filters)) {
+            $query->where('house_owner_id', $this->userId);
+        }
+        $query->orderBy('id', 'desc');
+
+        return $perPage
+            ? $query->paginate($perPage)
+            : $query->get();
     }
 
     public function find(int $id): ?Tenant

@@ -8,7 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 interface TenantRepositoryInterface
 {
-    public function all(?int $perPage): LengthAwarePaginator|Collection;
+    public function all(?int $perPage, array $filters): LengthAwarePaginator|Collection;
     public function find(int $id): ?Tenant;
     public function create(array $data): Tenant;
     public function update(int $id, array $data): bool;

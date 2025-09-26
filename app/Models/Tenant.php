@@ -14,7 +14,6 @@ class Tenant extends Model
         'name',
         'email',
         'contact',
-        'flat_id',
         'house_owner_id',
     ];
 
@@ -31,6 +30,6 @@ class Tenant extends Model
      */
     public function flat()
     {
-        return $this->belongsTo(Flat::class);
+        return $this->hasOne(Flat::class, 'tenant_id', 'id');
     }
 }

@@ -2,23 +2,49 @@
 
 namespace App\Repositories\Flat;
 
+use App\Enums\Roles;
 use App\Models\Flat;
 use App\Repositories\Flat\FlatRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 
 class FlatRepository implements FlatRepositoryInterface
 {
-    public function __construct(private Flat $flatModel) {}
+    private bool $isAdmin;
+    private int $userId;
 
-    public function all(?int $limit): array
+    public function __construct(private Flat $flatModel)
     {
-        return $this->flatModel->when($limit, fn($query) => $query->limit($limit))
-            ->get()
-            ->toArray();
+        $this->isAdmin = Auth::user()->role === Roles::ADMIN;
+        $this->userId = Auth::id();
+    }
+
+    public function all(?int $perPage, array $filters): LengthAwarePaginator|Collection
+    {
+        $query = $this->flatModel->newQuery();
+
+        // Apply filters first
+        foreach ($filters as $key => $value) {
+            if (!is_null($value)) {
+                $query->where($key, $value);
+            }
+        }
+
+        if (!$this->isAdmin && !array_key_exists('house_owner_id', $filters)) {
+            $query->where('house_owner_id', $this->userId);
+        }
+        $query->orderBy('id', 'desc');
+
+        return $perPage
+            ? $query->paginate($perPage)
+            : $query->get();
     }
 
     public function find(int $id): ?Flat
     {
-        return $this->flatModel->find($id);
+        return $this->flatModel->when(!$this->isAdmin, fn($query) => $query->where('house_owner_id', $this->userId))
+            ->find($id);
     }
 
     public function create(array $data): Flat

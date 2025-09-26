@@ -16,7 +16,7 @@ class BuildingController extends Controller
 
     public function index()
     {
-        $buildings = $this->buildingRepository->all(config('pagination.default.per_page'));
+        $buildings = $this->buildingRepository->all(config('pagination.default.per_page'), []);
         $owners = $this->userRepository->allByRole(Roles::HOUSE_OWNER, null);
 
         return view('buildings.index', compact('buildings', 'owners'));

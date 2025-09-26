@@ -24,10 +24,10 @@ class UserController extends Controller
     public function store(UserStoreRequest $request)
     {
         $data = $request->validated();
-        $data['password'] = Hash::make('123abc123');
+        $data['password'] = Hash::make('password');
         $this->userRepository->create($data);
 
-        return redirect()->route('users.index')->with('success', 'User created successfully. Default password is "123abc123".');
+        return redirect()->route('users.index')->with('success', 'User created successfully. Default password is "password".');
     }
 
     public function edit(int $id)

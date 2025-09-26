@@ -72,7 +72,7 @@
                 @admin
                 <td>{{ $tenant->owner->name }}</td>
                 @endadmin
-                <td>{{ $tenant->flat->number ?? 'N/A' }}</td>
+                <td>{{ $tenant->flat->flat_number ?? 'N/A' }}</td>
                 @admin
                 <td>
                     <a href="{{ route('tenants.edit', $tenant->id) }}" class="btn btn-sm btn-primary">Edit</a>

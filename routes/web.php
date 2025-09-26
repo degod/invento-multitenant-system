@@ -40,4 +40,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/buildings/{id}', [BuildingController::class, 'destroy'])->name('buildings.destroy');
 
     Route::get('/flats', [FlatController::class, 'index'])->name('flats.index');
+    Route::post('/flats', [FlatController::class, 'store'])->name('flats.store');
+    Route::get('/flats/{id}/edit', [FlatController::class, 'edit'])->name('flats.edit');
+    Route::put('/flats/{id}', [FlatController::class, 'update'])->name('flats.update');
+    Route::delete('/flats/{id}', [FlatController::class, 'destroy'])->name('flats.destroy');
+
+    Route::get('/flats/{id}/filter', [FlatController::class, 'filter'])->name('flats.filter');
 });

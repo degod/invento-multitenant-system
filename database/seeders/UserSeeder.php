@@ -36,5 +36,11 @@ class UserSeeder extends Seeder
         User::factory()->count(5)->create([
             'role' => Roles::HOUSE_OWNER,
         ]);
+
+        $this->command->info('=================================');
+        $this->command->info('5 House Owners Created!');
+        $this->command->info('=================================');
+        $this->command->info('PASSWORD: password');
+        $this->command->info('=================================');
     }
 }

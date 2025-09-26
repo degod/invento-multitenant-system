@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Enums\Roles;
 use App\Models\Flat;
 use App\Models\Building;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,7 +20,7 @@ class FlatFactory extends Factory
     {
         return [
             'flat_number' => strtoupper($this->faker->bothify('??-#')),
-            'owner_name' => $this->faker->name(),
+            'tenant_id' => Tenant::inRandomOrder()->first()->id ?? Tenant::factory()->create()->id,
             'building_id' => Building::inRandomOrder()->first()->id ?? Building::factory()->create()->id,
             'house_owner_id' => User::where('role', Roles::HOUSE_OWNER)->inRandomOrder()->first()->id,
         ];

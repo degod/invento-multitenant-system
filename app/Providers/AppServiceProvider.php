@@ -3,7 +3,8 @@
 namespace App\Providers;
 
 use App\Enums\Roles;
-use App\Models\BillCategory;
+use App\Repositories\Bill\BillRepository;
+use App\Repositories\Bill\BillRepositoryInterface;
 use App\Repositories\BillCategory\BillCategoryRepository;
 use App\Repositories\BillCategory\BillCategoryRepositoryInterface;
 use App\Repositories\Building\BuildingRepository;
@@ -30,6 +31,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(FlatRepositoryInterface::class, FlatRepository::class);
         $this->app->bind(TenantRepositoryInterface::class, TenantRepository::class);
         $this->app->bind(BillCategoryRepositoryInterface::class, BillCategoryRepository::class);
+        $this->app->bind(BillRepositoryInterface::class, BillRepository::class);
     }
 
     /**

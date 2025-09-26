@@ -16,11 +16,13 @@ class EmailService
     public function sendBillNotification(string $to, array $billData, $flat, $building): void
     {
         $subject = 'New Bill Notification';
-        $body = "A new bill has been created with the following details:\n\n" .
-            "Category: {$billData['category_name']}\n" .
-            "Amount: $" . number_format($billData['amount'], 2) . "\n" .
-            "Month: {$billData['month']}\n" .
-            "Flat: {$flat->number}, Building: {$building->name}, Address: {$building->address}\n\n" .
+        $body = "A new bill has been created with the following details:\n\n <br><br>" .
+            "<b>Category:</b> {$billData['category_name']}<br>" .
+            "<b>Amount:</b> $" . number_format($billData['amount'], 2) . "<br>" .
+            "<b>Month:</b> {$billData['month']}<br>" .
+            "<b>Building:</b> {$building->name}<br>" .
+            "<b>Address:</b> {$building->address}<br>" .
+            "<b>Flat:</b> {$flat->flat_number}<br><hr>" .
             "Please log in to your account to view more details.";
 
         $this->send($to, $subject, $body);

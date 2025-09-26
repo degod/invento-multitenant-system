@@ -1,3 +1,11 @@
+## PRE-REQUISITE
+
+-   Docker desktop
+-   Web browser
+-   Terminal (git bash)
+
+## HOW TO SETUP
+
 -   Clone repository
 
 ```bash
@@ -45,3 +53,12 @@ php artisan key:generate
 ```bash
 php artisan migrate:fresh --seed
 ```
+
+-   To access application, visit
+    `http://localhost:9090`
+
+-   To access application's database, visit
+    `http://localhost:9091`
+
+-   To access application's mailhost, visit
+    `http://localhost:8025`

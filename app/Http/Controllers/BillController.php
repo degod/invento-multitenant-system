@@ -58,6 +58,8 @@ class BillController extends Controller
             $tenant = $this->tenantRepository->find($flat->tenant_id);
 
             if ($tenant) {
+                $category = $this->billCategoryRepository->find($data['bill_category_id']);
+                $data['category_name'] = $category->name;
                 $building = $this->buildingRepository->find($flat->building_id);
                 $this->emailService->sendBillNotification($tenant->email, $data, $flat, $building);
             }

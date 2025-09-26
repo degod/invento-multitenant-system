@@ -15,9 +15,12 @@ use App\Repositories\Tenant\TenantRepository;
 use App\Repositories\Tenant\TenantRepositoryInterface;
 use App\Repositories\User\UserRepository;
 use App\Repositories\User\UserRepositoryInterface;
+use App\Services\EmailService;
+use App\Services\LogService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Psr\Log\LoggerInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +35,15 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(TenantRepositoryInterface::class, TenantRepository::class);
         $this->app->bind(BillCategoryRepositoryInterface::class, BillCategoryRepository::class);
         $this->app->bind(BillRepositoryInterface::class, BillRepository::class);
+
+
+        $this->app->singleton(LogService::class, function ($app) {
+            return new LogService($app->make(LoggerInterface::class));
+        });
+
+        $this->app->singleton(EmailService::class, function () {
+            return new EmailService();
+        });
     }
 
     /**

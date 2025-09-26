@@ -11,6 +11,7 @@ use App\Repositories\Building\BuildingRepositoryInterface;
 use App\Repositories\Flat\FlatRepositoryInterface;
 use App\Repositories\Tenant\TenantRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
+use App\Services\EmailService;
 use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class BillController extends Controller
     private bool $isAdmin;
     private int $userId;
 
-    public function __construct(private BillRepositoryInterface $billRepository, private UserRepositoryInterface $userRepository, private BillCategoryRepositoryInterface $billCategoryRepository, private FlatRepositoryInterface $flatRepository, private TenantRepositoryInterface $tenantRepository, private BuildingRepositoryInterface $buildingRepository, private LogService $logService)
+    public function __construct(private BillRepositoryInterface $billRepository, private UserRepositoryInterface $userRepository, private BillCategoryRepositoryInterface $billCategoryRepository, private FlatRepositoryInterface $flatRepository, private TenantRepositoryInterface $tenantRepository, private BuildingRepositoryInterface $buildingRepository, private LogService $logService, private EmailService $emailService)
     {
         $this->isAdmin = Auth::user()->role === 'admin';
         $this->userId = Auth::id();
@@ -51,6 +52,15 @@ class BillController extends Controller
         try {
             $data['month'] = Carbon::createFromFormat('Y-m', $data['month'])->format('F Y');
             $this->billRepository->create($data);
+
+            // Send email notification to tenant
+            $flat = $this->flatRepository->find($data['flat_id']);
+            $tenant = $this->tenantRepository->find($flat->tenant_id);
+
+            if ($tenant) {
+                $building = $this->buildingRepository->find($flat->building_id);
+                $this->emailService->sendBillNotification($tenant->email, $data, $flat, $building);
+            }
         } catch (\Exception $e) {
             $this->logService->error('Error creating bill: ' . $e->getMessage(), ['exception' => $e]);
             return redirect()->route('bills.index')->with('error', $e->getMessage());

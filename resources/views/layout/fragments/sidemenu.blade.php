@@ -19,18 +19,28 @@
         </li>
         @endadmin
         <li>
+            <a href="#billsMenu" data-bs-toggle="collapse" class="nav-link text-white d-flex align-items-center">
+                <span class="me-2 bi bi-people"></span>Bills Management
+                <span class="ms-auto bi bi-caret-down-fill"></span>
+            </a>
+            <ul class="collapse list-unstyled ps-3" id="billsMenu">
+                <li><a href="{{ route('bills.categories.index') }}" class="nav-link">Categories</a></li>
+                <li><a href="{{ route('bills.index') }}" class="nav-link">Bills</a></li>
+            </ul>
+        </li>
+        <li>
             <a href="{{ route('buildings.index') }}" class="nav-link text-white d-flex align-items-center">
                 <span class="me-2 bi bi-building"></span> Buildings
             </a>
         </li>
         <li>
-            <a href="{{ route('flats.index') }}" class="nav-link text-white d-flex align-items-center">
-                <span class="me-2 bi bi-house"></span> Flats
+            <a href="{{ route('tenants.index') }}" class="nav-link text-white d-flex align-items-center">
+                <span class="me-2 bi bi-person"></span> Tenants
             </a>
         </li>
         <li>
-            <a href="{{ route('tenants.index') }}" class="nav-link text-white d-flex align-items-center">
-                <span class="me-2 bi bi-person"></span> Tenants
+            <a href="{{ route('flats.index') }}" class="nav-link text-white d-flex align-items-center">
+                <span class="me-2 bi bi-house"></span> Flats
             </a>
         </li>
     </ul>

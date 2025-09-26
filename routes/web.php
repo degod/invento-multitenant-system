@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BillCategoryController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FlatController;
@@ -44,6 +45,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/flats/{id}/edit', [FlatController::class, 'edit'])->name('flats.edit');
     Route::put('/flats/{id}', [FlatController::class, 'update'])->name('flats.update');
     Route::delete('/flats/{id}', [FlatController::class, 'destroy'])->name('flats.destroy');
-
     Route::get('/flats/{id}/filter', [FlatController::class, 'filter'])->name('flats.filter');
+
+    Route::group(['prefix' => 'bills'], function () {
+        Route::get('/', [BillCategoryController::class, 'billsIndex'])->name('bills.index');
+        Route::post('/', [BillCategoryController::class, 'billsStore'])->name('bills.store');
+        Route::get('/{id}/edit', [BillCategoryController::class, 'billsEdit'])->name('bills.edit');
+        Route::put('/{id}', [BillCategoryController::class, 'billsUpdate'])->name('bills.update');
+        Route::delete('/{id}', [BillCategoryController::class, 'billsDestroy'])->name('bills.destroy');
+
+        Route::get('/categories', [BillCategoryController::class, 'index'])->name('bills.categories.index');
+        Route::post('/categories', [BillCategoryController::class, 'store'])->name('bills.categories.store');
+        Route::get('/categories/{id}/edit', [BillCategoryController::class, 'edit'])->name('bills.categories.edit');
+        Route::put('/categories/{id}', [BillCategoryController::class, 'update'])->name('bills.categories.update');
+        Route::delete('/categories/{id}', [BillCategoryController::class, 'destroy'])->name('bills.categories.destroy');
+    });
 });

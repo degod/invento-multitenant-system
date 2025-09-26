@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BillCategoryController;
+use App\Http\Controllers\BillController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FlatController;
@@ -48,11 +49,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/flats/{id}/filter', [FlatController::class, 'filter'])->name('flats.filter');
 
     Route::group(['prefix' => 'bills'], function () {
-        Route::get('/', [BillCategoryController::class, 'billsIndex'])->name('bills.index');
-        Route::post('/', [BillCategoryController::class, 'billsStore'])->name('bills.store');
-        Route::get('/{id}/edit', [BillCategoryController::class, 'billsEdit'])->name('bills.edit');
-        Route::put('/{id}', [BillCategoryController::class, 'billsUpdate'])->name('bills.update');
-        Route::delete('/{id}', [BillCategoryController::class, 'billsDestroy'])->name('bills.destroy');
+        Route::get('/', [BillController::class, 'index'])->name('bills.index');
+        Route::post('/', [BillController::class, 'store'])->name('bills.store');
+        Route::get('/{id}/edit', [BillController::class, 'edit'])->name('bills.edit');
+        Route::put('/{id}', [BillController::class, 'update'])->name('bills.update');
+        Route::delete('/{id}', [BillController::class, 'destroy'])->name('bills.destroy');
 
         Route::get('/categories', [BillCategoryController::class, 'index'])->name('bills.categories.index');
         Route::post('/categories', [BillCategoryController::class, 'store'])->name('bills.categories.store');

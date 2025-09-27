@@ -10,6 +10,8 @@ interface BillRepositoryInterface
 {
     public function all(?int $perPage, array $filters): LengthAwarePaginator|Collection;
 
+    public function getAllDues(): LengthAwarePaginator|Collection;
+
     public function find(int $id): ?Bill;
 
     public function create(array $data): Bill;
@@ -17,4 +19,6 @@ interface BillRepositoryInterface
     public function update(int $id, array $data): bool;
 
     public function delete(int $id): bool;
+
+    public function getUnpaidBillsForFlat(int $flatId): Collection;
 }

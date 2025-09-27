@@ -29,7 +29,7 @@ class BillStoreRequest extends FormRequest
             'bill_category_id' => ['required', 'exists:bill_categories,id'],
             'flat_id' => ['required', 'exists:flats,id'],
             'house_owner_id' => ['required', 'exists:users,id'],
-            'description' => ['nullable', 'string', 'max:255'],
+            'notes' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

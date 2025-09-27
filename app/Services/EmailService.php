@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MailClient;
+use Illuminate\Database\Eloquent\Collection;
 
 class EmailService
 {
@@ -24,6 +25,23 @@ class EmailService
             "<b>Address:</b> {$building->address}<br>" .
             "<b>Flat:</b> {$flat->flat_number}<br><hr>" .
             "Please log in to your account to view more details.";
+
+        $this->send($to, $subject, $body);
+    }
+
+    public function sendDueNotification(string $to, Collection $bills): void
+    {
+        $subject = 'Due Payment Notification';
+        $body = "The following bills have been marked as paid:\n\n <br><br>";
+
+        foreach ($bills as $bill) {
+            $body .= "<b>Category:</b> {$bill->category->name}<br>" .
+                "<b>Amount:</b> $" . number_format($bill->amount, 2) . "<br>" .
+                "<b>Month:</b> {$bill->month}<br>" .
+                "<b>Paid On:</b> " . now()->format('d M Y') . "<hr>";
+        }
+
+        $body .= "Thank you for your payment. Please log in to your account to view more details.";
 
         $this->send($to, $subject, $body);
     }

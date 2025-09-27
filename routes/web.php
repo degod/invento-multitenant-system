@@ -5,6 +5,7 @@ use App\Http\Controllers\BillCategoryController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DueController;
 use App\Http\Controllers\FlatController;
 use App\Http\Controllers\TenantController;
 use App\Http\Controllers\UserController;
@@ -65,4 +66,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/categories/{id}', [BillCategoryController::class, 'update'])->name('bills.categories.update');
         Route::delete('/categories/{id}', [BillCategoryController::class, 'destroy'])->name('bills.categories.destroy');
     });
+
+    Route::get('/dues', [DueController::class, 'index'])->name('dues.index');
+    Route::post('/dues', [DueController::class, 'store'])->name('dues.store');
 });

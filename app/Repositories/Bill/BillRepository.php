@@ -2,8 +2,10 @@
 
 namespace App\Repositories\Bill;
 
+use App\Enums\BillStatuses;
 use App\Enums\Roles;
 use App\Models\Bill;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -61,5 +63,59 @@ class BillRepository implements BillRepositoryInterface
     {
         $bill = $this->find($id);
         return $bill ? $bill->delete() : false;
+    }
+
+    public function getAllDues(): LengthAwarePaginator|Collection
+    {
+        $query = $this->billModel->newQuery()
+            ->where('status', 'unpaid');
+
+        if (!$this->isAdmin) {
+            $query->where('house_owner_id', $this->userId);
+        }
+        $bills = $query->orderBy('id', 'desc')->get();
+
+        $dueBills = $bills->filter(function ($bill) {
+            try {
+                return \Carbon\Carbon::createFromFormat('F Y', trim($bill->month))
+                    ->endOfMonth()
+                    ->isPast();
+            } catch (\Throwable $e) {
+                return false;
+            }
+        });
+
+        $dueGroups = $dueBills->groupBy('flat_id')->map(function ($group) {
+            return [
+                'flat_id'    => $group->first()->flat_id,
+                'total_due'  => $group->sum('amount'),
+                'bills'      => $group->sortByDesc('id')->values(),
+            ];
+        })->values();
+
+        $perPage = config('pagination.default.per_page', 15);
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $paged = $dueGroups->forPage($currentPage, $perPage);
+
+        return new LengthAwarePaginator(
+            $paged,
+            $dueGroups->count(),
+            $perPage,
+            $currentPage,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+    }
+
+    public function getUnpaidBillsForFlat(int $flatId): Collection
+    {
+        $query = $this->billModel->newQuery()
+            ->where('flat_id', $flatId)
+            ->where('status', BillStatuses::UNPAID);
+
+        if (!$this->isAdmin) {
+            $query->where('house_owner_id', $this->userId);
+        }
+
+        return $query->orderBy('id', 'desc')->get();
     }
 }

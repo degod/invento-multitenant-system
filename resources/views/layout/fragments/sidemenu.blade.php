@@ -29,6 +29,11 @@
             </ul>
         </li>
         <li>
+            <a href="{{ route('dues.index') }}" class="nav-link text-white d-flex align-items-center">
+                <span class="me-2 bi bi-cash"></span> Due Management
+            </a>
+        </li>
+        <li>
             <a href="{{ route('buildings.index') }}" class="nav-link text-white d-flex align-items-center">
                 <span class="me-2 bi bi-building"></span> Buildings
             </a>

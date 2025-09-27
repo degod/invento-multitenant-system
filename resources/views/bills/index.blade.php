@@ -85,6 +85,7 @@ use App\Enums\BillStatuses;
     <table class="table table-bordered">
         <thead>
             <tr>
+                <th>Flat</th>
                 <th>Month</th>
                 <th>Bill Type</th>
                 <th>Amount</th>
@@ -98,6 +99,7 @@ use App\Enums\BillStatuses;
         <tbody>
             @forelse($bills as $bill)
             <tr>
+                <td>{{ $bill->flat->flat_number }}</td>
                 <td>{{ $bill->month }}</td>
                 <td>{{ $bill->category->name }}</td>
                 <td>{{ '$' . number_format($bill->amount, 2, '.', ',') }}</td>
@@ -144,9 +146,9 @@ use App\Enums\BillStatuses;
             @empty
             <tr>
                 @admin
-                <td colspan="6" class="text-center">No bills found.</td>
+                <td colspan="7" class="text-center">No bills found.</td>
                 @else
-                <td colspan="5" class="text-center">No bills found.</td>
+                <td colspan="6" class="text-center">No bills found.</td>
                 @endadmin
             </tr>
             @endforelse

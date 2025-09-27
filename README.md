@@ -1,4 +1,4 @@
-### INVENTO MULTI-TENANT SYSTEM
+# INVENTO MULTI-TENANT SYSTEM
 
 Our system is designed to be a multi-tenant application, where each house owner acts as a tenant. All the core resources, like buildings, flats, tenants, bills, and so on, are linked to a house owner’s unique ID. To ensure data security, authorisation is enforced at the repository or query level. This means that non-admin users can only access data that belongs to their specific tenant. Admins, on the other hand, have full access to all the data for all their tenants.
 

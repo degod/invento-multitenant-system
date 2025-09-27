@@ -77,7 +77,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="4" class="text-center">No dues found.</td>
+                <td colspan="4" class="text-center">No unpaid dues found.</td>
             </tr>
             @endforelse
         </tbody>

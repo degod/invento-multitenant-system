@@ -90,6 +90,14 @@ php artisan migrate:fresh --seed
 -   To access application, visit
     `http://localhost:9090`
 
+-   To Login as "Super Admin":
+    `U:  admin@invento.test`
+    `P:  admin123`
+
+-   To Login as any House Owner:
+    `U:  select from the list of users [under user management]`
+    `P:  password`
+
 -   To access application's database, visit
     `http://localhost:9091`
 

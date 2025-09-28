@@ -105,4 +105,4 @@ php artisan migrate:fresh --seed
     `http://localhost:8025`
 
 This application is also deployed for random demo and can be accessed using the URL below:
-`http://invento.getenjoyment.net/` [http://invento.getenjoyment.net/]
+**[Click Here](http://invento.getenjoyment.net/**

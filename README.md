@@ -103,3 +103,6 @@ php artisan migrate:fresh --seed
 
 -   To access application's mailhost, visit
     `http://localhost:8025`
+
+This application is also deployed for random demo and can be accessed using the URL below:
+`http://invento.getenjoyment.net/` [http://invento.getenjoyment.net/]
